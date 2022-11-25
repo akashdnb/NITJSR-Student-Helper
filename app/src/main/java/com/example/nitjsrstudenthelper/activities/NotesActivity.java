@@ -1,5 +1,6 @@
 package com.example.nitjsrstudenthelper.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -7,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -14,6 +16,13 @@ import com.example.nitjsrstudenthelper.adapters.NotesAdapter;
 import com.example.nitjsrstudenthelper.databinding.ActivityNotesBinding;
 import com.example.nitjsrstudenthelper.models.ChildNoteItem;
 import com.example.nitjsrstudenthelper.models.NoteItem;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +31,8 @@ public class NotesActivity extends AppCompatActivity {
 
     ActivityNotesBinding binding;
     NotesAdapter adapter;
+    DatabaseReference databaseReference, subReference;
+    StorageReference storageReference;
     String branch=null ,semester=null;
 
     @Override
@@ -29,13 +40,11 @@ public class NotesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding= ActivityNotesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        databaseReference= FirebaseDatabase.getInstance().getReference("uploads");
+        subReference= FirebaseDatabase.getInstance().getReference("subjectList");
+        storageReference= FirebaseStorage.getInstance().getReference();
         createDialog();
-
-        setupRecyclerView();
-
     }
-
-
 
     void createDialog() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(NotesActivity.this);
@@ -70,7 +79,7 @@ public class NotesActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         semester= semesterArrayList.getItem(which);
-                        fetchData();
+                        setupRecyclerView();
                         dialog.dismiss();
                     }
                 });
@@ -80,37 +89,34 @@ public class NotesActivity extends AppCompatActivity {
         builderSingle.show();
     }
 
-    private void fetchData() {
-
-    }
-
     private void setupRecyclerView(){
         List<NoteItem> noteItemList= new ArrayList<>();
         List<ChildNoteItem> childNoteItemList = new ArrayList<>();
 
-        childNoteItemList.add(new ChildNoteItem("Maths", "mynotes.pdf","120kb",null,null));
-        childNoteItemList.add(new ChildNoteItem("Phy", "mynotes1.pdf","440kb",null,null));
-        childNoteItemList.add(new ChildNoteItem("Maths", "mynotes.pdf","120kb",null,null));
-        childNoteItemList.add(new ChildNoteItem("Maths", "mynotes.pdf","120kb",null,null));
+        databaseReference= databaseReference.child(branch).child(semester);
 
-        NoteItem item1= new NoteItem("Maths",childNoteItemList);
+        subReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-        noteItemList.add(item1);
-        noteItemList.add(item1);
-        noteItemList.add(item1);
-        noteItemList.add(item1);
+               try{
+                   for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                       noteItemList.add(new NoteItem(dataSnapshot.getValue().toString(),branch,semester));
+                   }
+                   adapter= new NotesAdapter(NotesActivity.this, noteItemList);
+                   binding.notesRv.setLayoutManager(new LinearLayoutManager(NotesActivity.this));
+                   binding.notesRv.setHasFixedSize(true);
+                   binding.notesRv.setAdapter(adapter);
+               }catch (Exception e){
+                   Toast.makeText(NotesActivity.this, "Something went wrong!!", Toast.LENGTH_SHORT).show();
+               }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
 
-//        noteItemList.add(new NoteItem("Maths"));
-//        noteItemList.add(new NoteItem("Phy"));
-//        noteItemList.add(new NoteItem("Chem"));
-//        noteItemList.add(new NoteItem("Electronics"));
 
-
-        adapter= new NotesAdapter((Context) this, noteItemList);
-        binding.notesRv.setLayoutManager(new LinearLayoutManager(this));
-        binding.notesRv.setHasFixedSize(true);
-
-        binding.notesRv.setAdapter(adapter);
 
     }
 }

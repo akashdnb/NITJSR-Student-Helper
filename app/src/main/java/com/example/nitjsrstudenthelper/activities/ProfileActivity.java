@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.nitjsrstudenthelper.R;
@@ -55,7 +53,7 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     GoogleSignInOptions gso;
     GoogleSignInClient googleSignInClient;
-    DatabaseReference databaseReference;
+    DatabaseReference databaseReference,subReference;
     StorageReference storageReference;
     String branch=null, semester=null, subject=null, title=null;
 
@@ -67,6 +65,7 @@ public class ProfileActivity extends AppCompatActivity {
         mAuth=FirebaseAuth.getInstance();
         storageReference= FirebaseStorage.getInstance().getReference();
         databaseReference= FirebaseDatabase.getInstance().getReference("uploads");
+        subReference= FirebaseDatabase.getInstance().getReference("subjectList");
 
         binding.uploadFiles.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,6 +218,7 @@ public class ProfileActivity extends AppCompatActivity {
                         //String key = databaseReference.push().getKey();
                         try {
                             databaseReference.child(subject).child(key).setValue(item);
+                            subReference.child(subject).setValue(subject);
                         }catch (Exception e){
                             Log.d("bug", e.toString());
                         }
@@ -311,8 +311,8 @@ public class ProfileActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        subject= subjectTv.getText().toString();
-                        title= titleTv.getText().toString();
+                        subject= subjectTv.getText().toString().toLowerCase(Locale.ROOT);
+                        title= titleTv.getText().toString().toLowerCase(Locale.ROOT);
                         if(subject.length()==0 || title.length()==0){
                             Toast.makeText(ProfileActivity.this, "Enter subject and Title", Toast.LENGTH_SHORT).show();
                         }

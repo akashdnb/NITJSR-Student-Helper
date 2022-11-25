@@ -1,5 +1,6 @@
 package com.example.nitjsrstudenthelper.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,11 +9,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.example.nitjsrstudenthelper.adapters.NotesAdapter;
 import com.example.nitjsrstudenthelper.databinding.ActivityPyqsBinding;
 import com.example.nitjsrstudenthelper.models.ChildNoteItem;
 import com.example.nitjsrstudenthelper.models.NoteItem;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +27,7 @@ import java.util.List;
 public class PYQsActivity extends AppCompatActivity {
     ActivityPyqsBinding binding;
     NotesAdapter adapter;
+    DatabaseReference databaseReference, subReference;
     String branch=null, semester= null;
 
     @Override
@@ -27,6 +35,8 @@ public class PYQsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding= ActivityPyqsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        databaseReference= FirebaseDatabase.getInstance().getReference("uploads");
+        subReference= FirebaseDatabase.getInstance().getReference("subjectList");
 
         createDialog();
     }
@@ -65,7 +75,7 @@ public class PYQsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         semester= semesterArrayList.getItem(which);
-                        fetchData();
+                        setupRecyclerView();
                         dialog.dismiss();
                     }
                 });
@@ -75,31 +85,34 @@ public class PYQsActivity extends AppCompatActivity {
         builderSingle.show();
     }
 
-    private void fetchData() {
-        setupRecyclerView();
-    }
-
     private void setupRecyclerView(){
         List<NoteItem> noteItemList= new ArrayList<>();
-         List<ChildNoteItem> childNoteItemList = new ArrayList<>();
+        List<ChildNoteItem> childNoteItemList = new ArrayList<>();
 
-        childNoteItemList.add(new ChildNoteItem("Maths", "mynotes.pdf","120kb",null,null));
-        childNoteItemList.add(new ChildNoteItem("Phy", "mynotes1.pdf","440kb",null,null));
-        childNoteItemList.add(new ChildNoteItem("Maths", "mynotes.pdf","120kb",null,null));
-        childNoteItemList.add(new ChildNoteItem("Maths", "mynotes.pdf","120kb",null,null));
+        databaseReference= databaseReference.child(branch).child(semester);
 
-        NoteItem item1= new NoteItem("Maths",childNoteItemList);
+        subReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-        noteItemList.add(item1);
-        noteItemList.add(item1);
-        noteItemList.add(item1);
-        noteItemList.add(item1);
+                try{
+                    for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                        noteItemList.add(new NoteItem(dataSnapshot.getValue().toString(),branch,semester));
+                    }
+                    adapter= new NotesAdapter(PYQsActivity.this, noteItemList);
+                    binding.pyqRv.setLayoutManager(new LinearLayoutManager(PYQsActivity.this));
+                    binding.pyqRv.setHasFixedSize(true);
+                    binding.pyqRv.setAdapter(adapter);
+                }catch (Exception e){
+                    Toast.makeText(PYQsActivity.this, "Something went wrong!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
 
-        adapter= new NotesAdapter((Context) this, noteItemList);
-        binding.pyqRv.setLayoutManager(new LinearLayoutManager(this));
-        binding.pyqRv.setHasFixedSize(true);
 
-        binding.pyqRv.setAdapter(adapter);
 
     }
 

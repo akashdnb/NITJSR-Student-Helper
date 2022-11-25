@@ -5,6 +5,8 @@ import android.net.Uri;
 public class ChildNoteItem {
     String title, fileName, size, id,uri;
 
+    public ChildNoteItem(){}
+
     public ChildNoteItem(String title, String fileName, String size, String id, String uri) {
         this.title = title;
         this.fileName = fileName;

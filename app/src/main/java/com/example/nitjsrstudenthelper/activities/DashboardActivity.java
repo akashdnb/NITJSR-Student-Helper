@@ -2,9 +2,13 @@ package com.example.nitjsrstudenthelper.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.GridLayout;
@@ -12,6 +16,13 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.nitjsrstudenthelper.databinding.ActivityDashboardBinding;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+
+import java.util.List;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -22,6 +33,7 @@ public class DashboardActivity extends AppCompatActivity {
         binding= ActivityDashboardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        checkPermissions();
         manageClickEvent();
     }
 
@@ -50,5 +62,24 @@ public class DashboardActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void checkPermissions() {
+        Dexter.withContext(this).withPermissions(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
+                        if(!multiplePermissionsReport.areAllPermissionsGranted()){
+                            Toast.makeText(DashboardActivity.this, "Please allow permission", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+
+                    }
+                }).check();
     }
 }

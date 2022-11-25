@@ -3,6 +3,7 @@ package com.example.nitjsrstudenthelper.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nitjsrstudenthelper.R;
 import com.example.nitjsrstudenthelper.activities.DownloadsActivity;
+import com.example.nitjsrstudenthelper.models.ChildNoteItem;
 import com.example.nitjsrstudenthelper.models.NoteItem;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.viewHolder> {
@@ -40,10 +48,36 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.viewHolder> 
     public void onBindViewHolder(@NonNull NotesAdapter.viewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.title.setText(itemList.get(position).getTitle());
         holder.title.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-                //Toast.makeText(context, "Clicked "+position, Toast.LENGTH_SHORT).show();
-                handleClick(position, holder.recyclerView, holder.seperetorView);
+                List<ChildNoteItem> childNoteItemList= new ArrayList<>();
+                DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("uploads")
+                                .child(itemList.get(position).getBranch())
+                                .child(itemList.get(position).getSemester())
+                                .child(itemList.get(position).getTitle());
+
+                databaseReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                            try {
+                                childNoteItemList.add(dataSnapshot.getValue(ChildNoteItem.class));
+                            }catch (Exception e){
+                                Log.d("bug", e+"");
+                            }
+                            childNoteAdapter adapter= new childNoteAdapter(context, childNoteItemList);
+                            holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                            holder.recyclerView.setAdapter(adapter);
+                            handleClick(position, holder.recyclerView, holder.seperetorView);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
         });
     }
@@ -66,10 +100,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.viewHolder> 
     }
 
     void handleClick(int position, RecyclerView recyclerView, View seperetorView){
-        childNoteAdapter adapter= new childNoteAdapter(context, itemList.get(position).getChildItemList());
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setAdapter(adapter);
-
         if(seperetorView.getVisibility()!=View.VISIBLE && recyclerView.getVisibility()!=View.VISIBLE){
             seperetorView.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
@@ -77,9 +107,5 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.viewHolder> 
             seperetorView.setVisibility(View.INVISIBLE);
             recyclerView.setVisibility(View.GONE);
         }
-
-//        Intent intent= new Intent(context, DownloadsActivity.class);
-//        intent.putExtra("from", 3);
-//        context.startActivity(intent);
     }
 }
