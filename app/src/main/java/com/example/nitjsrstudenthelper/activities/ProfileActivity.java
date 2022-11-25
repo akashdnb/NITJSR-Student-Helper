@@ -2,14 +2,23 @@ package com.example.nitjsrstudenthelper.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -48,6 +57,7 @@ public class ProfileActivity extends AppCompatActivity {
     GoogleSignInClient googleSignInClient;
     DatabaseReference databaseReference;
     StorageReference storageReference;
+    String branch=null, semester=null, subject=null, title=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +65,13 @@ public class ProfileActivity extends AppCompatActivity {
         binding= ActivityProfileBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         mAuth=FirebaseAuth.getInstance();
+        storageReference= FirebaseStorage.getInstance().getReference();
+        databaseReference= FirebaseDatabase.getInstance().getReference("uploads");
 
         binding.uploadFiles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                manageUploads();
+                createDialog();
             }
         });
         binding.signGoogleBtn.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +80,6 @@ public class ProfileActivity extends AppCompatActivity {
                 signIn();
             }
         });
-
     }
 
     @Override
@@ -110,6 +121,39 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.profile_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId()== R.id.log_out){
+            AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+            builder.setMessage("Do you want to sign out ?");
+            builder.setPositiveButton("Log Out", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    mAuth.signOut();
+                    gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestEmail()
+                            .requestIdToken(getString(R.string.default_web_client_id))
+                            .build();
+                    googleSignInClient= GoogleSignIn.getClient(ProfileActivity.this,gso);
+                    googleSignInClient.signOut();
+                    Intent mIntent = getIntent();
+                    startActivity(mIntent);
+                    finish();
+
+                }
+            });
+            builder.create().show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void signIn() {
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -118,8 +162,6 @@ public class ProfileActivity extends AppCompatActivity {
         googleSignInClient= GoogleSignIn.getClient(this,gso);
 
         processLogin();
-
-
     }
 
     private void processLogin() {
@@ -150,9 +192,6 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void manageUploads() {
-        storageReference= FirebaseStorage.getInstance().getReference();
-        databaseReference= FirebaseDatabase.getInstance().getReference("uploads");
-
         Intent intent= new Intent();
         intent.setType("application/pdf");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -160,6 +199,8 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void uploadFile(Uri data) {
+
+        databaseReference= databaseReference.child(branch).child(semester);
         final ProgressDialog dialog= new ProgressDialog(this);
         dialog.setTitle("Uploading...");
         dialog.show();
@@ -174,10 +215,10 @@ public class ProfileActivity extends AppCompatActivity {
                         Uri uri= uriTask.getResult();
 
                         String key = getSaltString();
-                        ChildNoteItem item= new ChildNoteItem("myPdf","Pdf","123kb",key,uri.toString());
+                        ChildNoteItem item= new ChildNoteItem(subject,title,"???kb",key,uri.toString());
                         //String key = databaseReference.push().getKey();
                         try {
-                            databaseReference.child(key).setValue(item);
+                            databaseReference.child(subject).child(key).setValue(item);
                         }catch (Exception e){
                             Log.d("bug", e.toString());
                         }
@@ -211,6 +252,85 @@ public class ProfileActivity extends AppCompatActivity {
         }
         String saltStr = salt.toString();
         return saltStr;
-
     }
+
+    void createDialog() {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(ProfileActivity.this);
+        builderSingle.setTitle("Select branch:-");
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(ProfileActivity.this, android.R.layout.select_dialog_singlechoice);
+        arrayAdapter.add("CSE");
+        arrayAdapter.add("ECE");
+        arrayAdapter.add("EE");
+        arrayAdapter.add("MECH");
+        arrayAdapter.add("CIVIL");
+        arrayAdapter.add("PI");
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                branch = arrayAdapter.getItem(which);
+
+                AlertDialog.Builder builderInner = new AlertDialog.Builder(ProfileActivity.this);
+                builderInner.setTitle("Select Semester:-");
+                final ArrayAdapter<String> semesterArrayList = new ArrayAdapter<String>(ProfileActivity.this, android.R.layout.select_dialog_singlechoice);
+                semesterArrayList.add("1st Semester");
+                semesterArrayList.add("2nd Semester");
+                semesterArrayList.add("3rd Semester");
+                semesterArrayList.add("4th Semester");
+                semesterArrayList.add("5th Semester");
+                semesterArrayList.add("6th Semester");
+                semesterArrayList.add("7th Semester");
+                semesterArrayList.add("8th Semester");
+
+                builderInner.setAdapter(semesterArrayList, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        semester= semesterArrayList.getItem(which);
+                        getData();
+                        dialog.dismiss();
+                    }
+                });
+                builderInner.show();
+            }
+        });
+        builderSingle.show();
+    }
+
+    void getData(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        View promptView = LayoutInflater.from(this).inflate(R.layout.prompts, null);
+
+        alertDialogBuilder.setView(promptView);
+
+        final EditText subjectTv = (EditText) promptView.findViewById(R.id.subject_tv);
+        final EditText titleTv = (EditText) promptView.findViewById(R.id.subject_tv);
+
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        subject= subjectTv.getText().toString();
+                        title= titleTv.getText().toString();
+                        if(subject.length()==0 || title.length()==0){
+                            Toast.makeText(ProfileActivity.this, "Enter subject and Title", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            manageUploads();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        AlertDialog alertD = alertDialogBuilder.create();
+
+        alertD.show();
+    }
+
 }
