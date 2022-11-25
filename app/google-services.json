@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "116037862042",
+    "project_id": "nitjsr-student-helper",
+    "storage_bucket": "nitjsr-student-helper.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:116037862042:android:2b882908d264156e1bd523",
+        "android_client_info": {
+          "package_name": "com.example.nitjsrstudenthelper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "116037862042-vmii7pip2n8kvp8dvcrutsblk4oorm7b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.nitjsrstudenthelper",
+            "certificate_hash": "82cc1eb6f3f10821e28a8cc7d6a6c6714d53b2af"
+          }
+        },
+        {
+          "client_id": "116037862042-h7nljlqnie556kprou4or7nm8rp0vvau.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQXa1LfyduLFD3DSW4Zg9DCzpVBA6ven8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "116037862042-h7nljlqnie556kprou4or7nm8rp0vvau.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
