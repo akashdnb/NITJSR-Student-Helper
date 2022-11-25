@@ -3,10 +3,9 @@ package com.example.nitjsrstudenthelper.models;
 import android.net.Uri;
 
 public class ChildNoteItem {
-    String title, fileName, size, id;
-    Uri uri;
+    String title, fileName, size, id,uri;
 
-    public ChildNoteItem(String title, String fileName, String size, String id, Uri uri) {
+    public ChildNoteItem(String title, String fileName, String size, String id, String uri) {
         this.title = title;
         this.fileName = fileName;
         this.size = size;
@@ -46,11 +45,11 @@ public class ChildNoteItem {
         this.id = id;
     }
 
-    public Uri getUri() {
+    public String getUri() {
         return uri;
     }
 
-    public void setUri(Uri uri) {
+    public void setUri(String uri) {
         this.uri = uri;
     }
 }
