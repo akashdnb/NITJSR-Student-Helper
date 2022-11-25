@@ -6,6 +6,10 @@ public class NoteItem {
     String title;
     private List<ChildNoteItem> childItemList;
 
+    public NoteItem(String title) {
+        this.title = title;
+    }
+
     public NoteItem(String title, List<ChildNoteItem> childItemList) {
         this.title = title;
         this.childItemList = childItemList;

@@ -2,6 +2,7 @@ package com.example.nitjsrstudenthelper.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nitjsrstudenthelper.R;
+import com.example.nitjsrstudenthelper.activities.DownloadsActivity;
 import com.example.nitjsrstudenthelper.models.NoteItem;
 
 import java.util.List;
@@ -75,5 +77,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.viewHolder> 
             seperetorView.setVisibility(View.INVISIBLE);
             recyclerView.setVisibility(View.GONE);
         }
+
+//        Intent intent= new Intent(context, DownloadsActivity.class);
+//        intent.putExtra("from", 3);
+//        context.startActivity(intent);
     }
 }

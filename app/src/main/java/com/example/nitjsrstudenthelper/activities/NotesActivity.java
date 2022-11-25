@@ -37,7 +37,6 @@ public class NotesActivity extends AppCompatActivity {
 
 
 
-
     void createDialog() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(NotesActivity.this);
         builderSingle.setTitle("Select branch:-");
@@ -94,12 +93,17 @@ public class NotesActivity extends AppCompatActivity {
         childNoteItemList.add(new ChildNoteItem("Maths", "mynotes.pdf","120kb",null,null));
         childNoteItemList.add(new ChildNoteItem("Maths", "mynotes.pdf","120kb",null,null));
 
-        NoteItem item1= new NoteItem("Maths", childNoteItemList);
+        NoteItem item1= new NoteItem("Maths",childNoteItemList);
 
         noteItemList.add(item1);
         noteItemList.add(item1);
         noteItemList.add(item1);
         noteItemList.add(item1);
+
+//        noteItemList.add(new NoteItem("Maths"));
+//        noteItemList.add(new NoteItem("Phy"));
+//        noteItemList.add(new NoteItem("Chem"));
+//        noteItemList.add(new NoteItem("Electronics"));
 
 
         adapter= new NotesAdapter((Context) this, noteItemList);
