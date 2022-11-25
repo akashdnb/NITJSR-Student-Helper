@@ -4,6 +4,145 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".activities.ProfileActivity">
+
+
+    <LinearLayout
+        android:id="@+id/profile_layout"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:background="#2196F3"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/profile" />
+
+        <TextView
+            android:id="@+id/my_registration_no_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:layout_marginTop="20dp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:textColor="@color/white"
+            android:text="Akash Ranjan"/>
+
+        <Button
+            android:id="@+id/upload_files"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:text="upload files"
+            android:visibility="gone"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:id="@+id/login_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:visibility="visible"
+            android:layout_marginHorizontal="14dp"
+            android:layout_weight="3">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/registration_no_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Registration No.."
+                android:layout_weight="1"
+                android:maxLength="12"
+                android:layout_margin="8dp"
+                android:textColor="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/login_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:layout_margin="8dp"
+                android:text="Login"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/verify_otp_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"
+            android:layout_marginHorizontal="14dp"
+            android:layout_weight="3">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/verify_otp_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter otp"
+                android:layout_weight="1"
+                android:maxLength="12"
+                android:layout_margin="8dp"
+                android:textColor="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/verify_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:layout_margin="8dp"
+                android:text="Verify"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="20dp"
+        app:cardBackgroundColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_layout">
+
+        <TextView
+            android:id="@+id/my_uploads_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:text="My uploads"/>
+
+        <TextView
+            android:id="@+id/please_login_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:text="Please login to upload files.."/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/uploads_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="35dp"/>
+
+    </androidx.cardview.widget.CardView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
