@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.app.UiAutomation;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nitjsrstudenthelper.R;
@@ -47,12 +51,20 @@ public class DownloadsItemAdapter extends RecyclerView.Adapter<DownloadsItemAdap
         holder.progressBar.setVisibility(View.GONE);
         holder.downloadBtn.setImageResource(R.drawable.ic_delete);
 
+        holder.fileName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openPDF(itemList.get(position).getUri());
+            }
+        });
+
         holder.downloadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 handleClick(position);
             }
         });
+
     }
 
     @Override
@@ -95,5 +107,21 @@ public class DownloadsItemAdapter extends RecyclerView.Adapter<DownloadsItemAdap
                         dialogInterface.dismiss();
                     }
                 }).show();
+    }
+
+    private void openPDF(String uri) {
+        try {
+            File file = new File(uri);
+            Uri uri1 = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", file);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri1, "application/pdf");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            context.startActivity(intent);
+        }catch (Exception e){
+            Toast.makeText(context, "Unable to open  pdf file!!", Toast.LENGTH_SHORT).show();
+            Log.d("bug", e+"");
+        }
+
     }
 }
