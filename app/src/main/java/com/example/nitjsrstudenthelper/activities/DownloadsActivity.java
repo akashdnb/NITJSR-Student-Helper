@@ -8,7 +8,9 @@ import android.os.Bundle;
 import com.example.nitjsrstudenthelper.adapters.childNoteAdapter;
 import com.example.nitjsrstudenthelper.databinding.ActivityDownloadsBinding;
 import com.example.nitjsrstudenthelper.models.ChildNoteItem;
+import com.example.nitjsrstudenthelper.utils.pathUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +31,12 @@ public class DownloadsActivity extends AppCompatActivity {
 
     private void setUpRecyclerView(){
         List<ChildNoteItem> childNoteItemList = new ArrayList<>();
-        childNoteItemList.add(new ChildNoteItem("Laplace Transform", "lt-1.pdf","243kb",null,null));
-        childNoteItemList.add(new ChildNoteItem("Laplace Transform", "lt-1.pdf","243kb",null,null));
-        childNoteItemList.add(new ChildNoteItem("Laplace Transform", "lt-1.pdf","243kb",null,null));
-        childNoteItemList.add(new ChildNoteItem("Laplace Transform", "lt-1.pdf","243kb",null,null));
-        childNoteItemList.add(new ChildNoteItem("Laplace Transform", "lt-1.pdf","243kb",null,null));
+        File directory = new File(String.valueOf(pathUtil.rootDir));
+        File[] files = directory.listFiles();
+        for (int i = 0; i < files.length; i++)
+        {
+            childNoteItemList.add(new ChildNoteItem("Laplace Transform", files[i].getName(),"243kb",null,files[i].getAbsolutePath()));
+        }
 
         childNoteAdapter =new childNoteAdapter(this,childNoteItemList);
         binding.downloadsRv.setLayoutManager(new LinearLayoutManager(this));
