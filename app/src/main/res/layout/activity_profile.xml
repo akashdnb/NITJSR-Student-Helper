@@ -108,7 +108,7 @@
             android:textSize="24sp"
             android:textStyle="bold"
             android:visibility="gone"
-            android:text="My uploads"/>
+            android:text="Recent uploads"/>
 
         <TextView
             android:id="@+id/please_login_tv"
