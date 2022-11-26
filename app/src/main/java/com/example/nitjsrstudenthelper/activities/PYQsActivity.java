@@ -41,10 +41,9 @@ public class PYQsActivity extends AppCompatActivity {
         createDialog();
     }
 
-
     void createDialog() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(PYQsActivity.this);
-        builderSingle.setTitle("Select branch:-");
+        builderSingle.setTitle("Select branch:-").setCancelable(false);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(PYQsActivity.this, android.R.layout.select_dialog_singlechoice);
         arrayAdapter.add("CSE");
@@ -60,7 +59,7 @@ public class PYQsActivity extends AppCompatActivity {
                 branch = arrayAdapter.getItem(which);
 
                 AlertDialog.Builder builderInner = new AlertDialog.Builder(PYQsActivity.this);
-                builderInner.setTitle("Select Semester:-");
+                builderInner.setTitle("Select Semester:-").setCancelable(false);
                 final ArrayAdapter<String> semesterArrayList = new ArrayAdapter<String>(PYQsActivity.this, android.R.layout.select_dialog_singlechoice);
                 semesterArrayList.add("1st Semester");
                 semesterArrayList.add("2nd Semester");
@@ -78,8 +77,22 @@ public class PYQsActivity extends AppCompatActivity {
                         setupRecyclerView();
                         dialog.dismiss();
                     }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(PYQsActivity.this, "Please Select Semester!!", Toast.LENGTH_SHORT).show();
+                        dialogInterface.dismiss();
+                        finish();
+                    }
                 });
                 builderInner.show();
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(PYQsActivity.this, "Please Select branch!!", Toast.LENGTH_SHORT).show();
+                dialogInterface.dismiss();
+                finish();
             }
         });
         builderSingle.show();

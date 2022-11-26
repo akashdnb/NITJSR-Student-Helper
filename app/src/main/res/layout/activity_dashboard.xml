@@ -30,16 +30,6 @@
                 android:textColor="@android:color/white"
                 android:textSize="34sp" />
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="302dp"
-                android:layout_height="126dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="2dp"
-                android:visibility="gone"
-                android:background="@drawable/profile" />
-
         </RelativeLayout>
 
         <GridLayout
@@ -93,7 +83,6 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Column 2 -->
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -134,9 +123,6 @@
             </androidx.cardview.widget.CardView>
 
 
-            <!-- Row 2 -->
-
-            <!-- Column 1 -->
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -176,7 +162,6 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Column 2 -->
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -216,10 +201,6 @@
 
             </androidx.cardview.widget.CardView>
 
-
-            <!-- Row 2 -->
-
-            <!-- Column 1 -->
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -259,7 +240,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Column 2 -->
+
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="0dp"

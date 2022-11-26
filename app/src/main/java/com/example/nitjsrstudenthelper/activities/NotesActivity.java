@@ -48,7 +48,8 @@ public class NotesActivity extends AppCompatActivity {
 
     void createDialog() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(NotesActivity.this);
-        builderSingle.setTitle("Select branch:-");
+        builderSingle.setTitle("Select branch:-")
+                .setCancelable(false);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(NotesActivity.this, android.R.layout.select_dialog_singlechoice);
         arrayAdapter.add("CSE");
@@ -64,7 +65,7 @@ public class NotesActivity extends AppCompatActivity {
                 branch = arrayAdapter.getItem(which);
 
                 AlertDialog.Builder builderInner = new AlertDialog.Builder(NotesActivity.this);
-                builderInner.setTitle("Select Semester:-");
+                builderInner.setTitle("Select Semester:-").setCancelable(false);
                 final ArrayAdapter<String> semesterArrayList = new ArrayAdapter<String>(NotesActivity.this, android.R.layout.select_dialog_singlechoice);
                 semesterArrayList.add("1st Semester");
                 semesterArrayList.add("2nd Semester");
@@ -82,8 +83,22 @@ public class NotesActivity extends AppCompatActivity {
                         setupRecyclerView();
                         dialog.dismiss();
                     }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(NotesActivity.this, "Please Select Semester!!", Toast.LENGTH_SHORT).show();
+                        dialogInterface.dismiss();
+                        finish();
+                    }
                 });
                 builderInner.show();
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(NotesActivity.this, "Please select branch!!", Toast.LENGTH_SHORT).show();
+                dialogInterface.dismiss();
+                finish();
             }
         });
         builderSingle.show();

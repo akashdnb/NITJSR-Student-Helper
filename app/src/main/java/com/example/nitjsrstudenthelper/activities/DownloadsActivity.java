@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
 
+import com.example.nitjsrstudenthelper.adapters.DownloadsItemAdapter;
 import com.example.nitjsrstudenthelper.adapters.childNoteAdapter;
 import com.example.nitjsrstudenthelper.databinding.ActivityDownloadsBinding;
 import com.example.nitjsrstudenthelper.models.ChildNoteItem;
@@ -17,7 +18,7 @@ import java.util.List;
 public class DownloadsActivity extends AppCompatActivity {
 
     ActivityDownloadsBinding binding;
-    childNoteAdapter childNoteAdapter;
+    public DownloadsItemAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +30,7 @@ public class DownloadsActivity extends AppCompatActivity {
     }
 
 
-    private void setUpRecyclerView(){
+    public void setUpRecyclerView(){
         List<ChildNoteItem> childNoteItemList = new ArrayList<>();
         File directory = new File(String.valueOf(pathUtil.rootDir));
         File[] files = directory.listFiles();
@@ -38,8 +39,9 @@ public class DownloadsActivity extends AppCompatActivity {
             childNoteItemList.add(new ChildNoteItem("Laplace Transform", files[i].getName(),"243kb",null,files[i].getAbsolutePath()));
         }
 
-        childNoteAdapter =new childNoteAdapter(this,childNoteItemList);
+        adapter =new DownloadsItemAdapter(this,childNoteItemList);
         binding.downloadsRv.setLayoutManager(new LinearLayoutManager(this));
-        binding.downloadsRv.setAdapter(childNoteAdapter);
+        binding.downloadsRv.setAdapter(adapter);
+
     }
 }
